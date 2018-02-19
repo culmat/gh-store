@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>gh-store demo</title>
+
+</head>
+<body>
+<!-- 
+username, password, repo, path, content, name, email, message, branch
+ -->
+<label for="username">username</label>
+<input type="text" id="username"><br/>
+
+<label for="password">password</label>
+<input type="password" id="password"><br/>
+
+<label for="repo">repo</label>
+<input type="text" id="repo"><br/>
+
+<label for="path">path</label>
+<input type="text" id="path"><br/>
+
+<label for="sha">sha</label>
+<input type="text" id="sha"><br/>
+
+<label for="name">name</label>
+<input type="text" id="name"><br/>
+
+<label for="email">email</label>
+<input type="text" id="email"><br/>
+
+<label for="message">message</label>
+<input type="text" id="message"><br/>
+
+<label for="branch">branch</label>
+<input type="text" id="branch"><br/>
+
+<label for="content">content</label>
+<textarea rows="10" cols="40"  id="content"></textarea><br/>
+<button id="save">save</button>
+<script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+<script type="text/javascript" src="gh-store.js"></script>
+<script type="text/javascript">
+	var props = [
+		  "username" 
+		  ,"password" 
+		  ,"repo" 
+		  ,"path" 
+		  ,"sha" 
+		  ,"content" 
+		  ,"name" 
+		  ,"email" 
+		  ,"message" 
+		  ,"branch"];
+	function get(props) {
+		var ret = {}
+		$.each(props, function(index, value) {
+			 ret[value] = $("#"+value).val();
+		});
+		return ret;
+	}
+	function set(props) {
+		if(!props) return;
+		for(var prop in props){
+			$("#"+prop).val( props[prop]);
+		}
+	}
+	function loadSha(){
+		$('#sha').val('');
+		ghGet(
+				  $("#username").val(), 
+				  $("#password").val(), 
+				  $("#repo").val(), 
+				  $("#path").val(), 
+				  $("#branch").val(),
+				  function(res) {
+			  console.log(res);
+			  $('#sha').val(res.sha);
+		  });
+	}
+	onunload = function() {
+		localStorage.setItem('props', JSON.stringify(get(props)));
+	};
+	set(JSON.parse(localStorage.getItem('props')));
+	$("#save").click(function() {
+			ghPut(
+				  $("#username").val(), 
+				  $("#password").val(), 
+				  $("#repo").val(), 
+				  $("#path").val(),
+				  $("#sha").val(), 
+				  $("#content").val(), 
+				  $("#name").val(), 
+				  $("#email").val(), 
+				  $("#message").val(), 
+				  $("#branch").val(),
+				  function(res) {
+			  console.log(res);
+			  loadSha();
+		  });
+	});
+	$( "#path" ).blur(function() {
+		loadSha();
+	});
+	
+	
+	
+</script>
+</body>
+</html>

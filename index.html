@@ -38,7 +38,7 @@
 
 <label for="content">content</label>
 <textarea rows="10" cols="40"  id="content"></textarea><br/>
-<button id="save">save</button>
+<button id="save">save</button><button id="refresh">refresh</button>
 <script
 			  src="https://code.jquery.com/jquery-3.3.1.min.js"
 			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -69,7 +69,7 @@
 			$("#"+prop).val( props[prop]);
 		}
 	}
-	function loadSha(){
+	function load(){
 		$('#sha').val('');
 		ghGet(
 			  $("#username").val(), 
@@ -102,11 +102,14 @@
 				  $("#branch").val(),
 				  function(res) {
 			  console.log(res);
-			  loadSha();
+			  load();
 		  });
 	});
+	$("#refresh").click(function() {
+		  load();
+	});
 	$( "#path" ).blur(function() {
-		loadSha();
+		load();
 	});
 	$( "#password" ).blur(function() {
 		ghGetUser(
